@@ -14,8 +14,12 @@ var port = 3000;
 // special address that always refers to localhost.
 var ip = "127.0.0.1";
 
+function handleRequest(request, response){
+  response.end('Hello It works again');
+}
 
 
+console.log("Hi Aralya")
 // We use node's http module to create a server.
 //
 // The function we pass to http.createServer will be used to handle all
