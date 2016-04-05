@@ -30,7 +30,8 @@ var requestHandler = function(request, response) {
   
 
   console.log("Serving request type " + request.method + " for url " + request.url);
-
+  // console.log("What is response", response.url)
+  // console.log('this is request', request)
   // The outgoing status.
   var statusCode = 200;
 
@@ -42,14 +43,35 @@ var requestHandler = function(request, response) {
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
 
-  if(request.method === 'POST'){
-    statusCode = 201;
-  }
 
   headers['Content-Type'] = "text/plain";
 
 
   // Content-Type = "application/json";
+  if(request.method === 'POST'){
+    statusCode = 201;
+    // headers['Content-Type'] = "application/JSON";
+    var body = '';
+    request.on('data', function(newPost) {
+      body += newPost;
+    });
+    request.on('end', function() {
+      console.log('body:', body);
+      var messages = JSON.parse(body)
+      // var messages = [];
+      // messages.push(obj);
+      console.log("messages", messages);
+    response.writeHead(statusCode, headers);
+    console.log('messages after writeHead', messages)
+    response.end(JSON.stringify(messages));
+    console.log("are we there yet");
+    })
+        // response.writeHead(201, headers);
+    // response.end()
+    // console.log('this is response:', request);
+    } else {
+    response.end(JSON.stringify({results: []}));
+  }
 
   // headers.contentType = "application/json";
   //Andy added this!  What A fool!
@@ -64,7 +86,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end(JSON.stringify({results: []}));
+  console.log("we've gone too far")
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
