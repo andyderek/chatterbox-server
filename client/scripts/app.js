@@ -5,216 +5,216 @@
 // backbone-based implementation of chatterbox-client
 ///////////////////////////////////////////////////////////////////////
 
-var Message = Backbone.Model.extend({
-  url: 'https://api.parse.com/1/classes/chatterbox',
+// var Message = Backbone.Model.extend({
+//   url: 'http://127.0.0.1',
   
-  defaults: {
-    username:'',
-    roomname:'',
-    text:''
-  }
-});
+//   defaults: {
+//     username:'',
+//     roomname:'',
+//     text:''
+//   }
+// });
 
-var Messages = Backbone.Model.extend({
-  model: Message,
-  url: 'https://api.parse.com/1/classes/chatterbox',
+// var Messages = Backbone.Model.extend({
+//   model: Message,
+//   url: 'http://127.0.0.1',
 
-  loadMsgs: function() {
-    this.fetch({
-      data: {order: '-createdAt'}
-    });
-  },
+//   loadMsgs: function() {
+//     this.fetch({
+//       // data: {order: '-createdAt'}
+//     });
+//   },
   
-  parse: function(response, options) {
-    var results = [];
-    for (var i = response.results.length -1; i >= 0; i--) {
-      results.push(response.results[i]);
-    }
-    return results;
-  }
+//   parse: function(response, options) {
+//     var results = [];
+//     for (var i = response.results.length -1; i >= 0; i--) {
+//       results.push(response.results[i]);
+//     }
+//     return results;
+//   }
 
-});
+// });
 
-var FormView = Backbone.View.extend({
+// var FormView = Backbone.View.extend({
 
-  initialize: function() {
-    this.collection.on('sync', this.stopSpinner, this);
-  },
+//   initialize: function() {
+//     this.collection.on('sync', this.stopSpinner, this);
+//   },
   
-  events: {
-    'submit #send': 'handleSubmit'
-  },
+//   events: {
+//     'submit #send': 'handleSubmit'
+//   },
 
-  handleSubmit: function(e) {
-    e.preventDefault();
+//   handleSubmit: function(e) {
+//     e.preventDefault();
 
-    this.startSpinner();
+//     this.startSpinner();
 
-    var $text = this.$('#message');
+//     var $text = this.$('#message');
 
-    var message = {
-      username: window.location.search.substr(10),
-      text: $text.val()
-    };
+//     var message = {
+//       username: window.location.search.substr(10),
+//       text: $text.val()
+//     };
 
-    $text.val('');
+//     $text.val('');
 
-    var message = new Message(message);
-    message.save();
-  },
+//     var message = new Message(message);
+//     message.save();
+//   },
 
-  startSpinner: function() {
-    this.$('spinner img').show();
-    this.$('form input[type=submit]').attr('disabled', "true");
-  },
+//   startSpinner: function() {
+//     this.$('spinner img').show();
+//     this.$('form input[type=submit]').attr('disabled', "true");
+//   },
 
-  stopSpinner: function() {
-    this.$('.spinner img').fadeOut('fast');
-    this.$('form input[type=submit]').attr('disabled', null);
-  }
+//   stopSpinner: function() {
+//     this.$('.spinner img').fadeOut('fast');
+//     this.$('form input[type=submit]').attr('disabled', null);
+//   }
 
-});
+// });
 
 
-var MessageView = Backbone.View.extend({
+// var MessageView = Backbone.View.extend({
   
-  template: _.template('<div class="chat" data-id="<%- objectId %>"> \
-    <div class="user"><%- username %></div> \
-    <div class="text"><%- text %></div> \
-    </div>'),
+//   template: _.template('<div class="chat" data-id="<%- objectId %>"> \
+//     <div class="user"><%- username %></div> \
+//     <div class="text"><%- text %></div> \
+//     </div>'),
 
-  render: function() {
-    this.model.username = this.model.username || '';
-    this.model.text = this.model.text || '';
-    this.$el.html(this.template(this.model))
-    return this.$el;
-  }
+//   render: function() {
+//     this.model.username = this.model.username || '';
+//     this.model.text = this.model.text || '';
+//     this.$el.html(this.template(this.model))
+//     return this.$el;
+//   }
 
-});
+// });
 
-var MessagesView = Backbone.View.extend({
-  onscreenMessages: {},
+// var MessagesView = Backbone.View.extend({
+//   onscreenMessages: {},
 
-  initialize: function() {
-    this.collection.on('sync', this.render, this);
-  },
+//   initialize: function() {
+//     this.collection.on('sync', this.render, this);
+//   },
 
-  render: function() {
-    _.each(this.collection.attributes, this.renderMessage, this);
-  },
+//   render: function() {
+//     _.each(this.collection.attributes, this.renderMessage, this);
+//   },
 
-  renderMessage: function(message) {
-    // console.log('message:',message);
-    if( !this.onscreenMessages[message.objectId]) {
-      var messageView = new MessageView({model: message});
-      var $html = messageView.render();
-      $('#chats').prepend(messageView.render());
-      this.onscreenMessages[message.objectId] = true;
-    }
-  }
+//   renderMessage: function(message) {
+//     // console.log('message:',message);
+//     if( !this.onscreenMessages[message.objectId]) {
+//       var messageView = new MessageView({model: message});
+//       var $html = messageView.render();
+//       $('#chats').prepend(messageView.render());
+//       this.onscreenMessages[message.objectId] = true;
+//     }
+//   }
   
-});
+// });
 
 
 ///////////////////////////////////////////////////////////////////////
 // Simplified jQuery-based implementation of chatterbox-client
 ///////////////////////////////////////////////////////////////////////
-// var app = {
+var app = {
 
-//   server: 'https://api.parse.com/1/classes/chatterbox',
+  server: 'https://api.parse.com/1/classes/chatterbox',
 
-//   init: function() {
-//     console.log('running chatterbox');
+  init: function() {
+    console.log('running chatterbox');
 
-//     // Get username:
-//     app.username = window.location.search.substr(10);
+    // Get username:
+    app.username = window.location.search.substr(10);
 
-//     app.onscreenMessages = {};
+    app.onscreenMessages = {};
 
-//     // cache a dom reference:
-//     app.$text = $('#message');
+    // cache a dom reference:
+    app.$text = $('#message');
 
-//     app.loadMsgs();
-//     setInterval(app.loadMsgs.bind(app),1000);
+    app.loadMsgs();
+    setInterval(app.loadMsgs.bind(app),1000);
 
-//     $('#send').on('submit', app.handleSubmit);
-//   },
+    $('#send').on('submit', app.handleSubmit);
+  },
 
-//   handleSubmit: function(e) {
-//     e.preventDefault();
-//     var message = {
-//       username: app.username,
-//       text: app.$text.val()
-//     };
+  handleSubmit: function(e) {
+    e.preventDefault();
+    var message = {
+      username: app.username,
+      text: app.$text.val()
+    };
 
-//     app.$text.val('');
+    app.$text.val('');
 
-//     app.sendMsg(message);
-//   },
+    app.sendMsg(message);
+  },
 
-//   renderMessage: function(message) {
-//     var $user = $("<div>",{class: 'user'}).text(message.username);
-//     var $text = $("<div>", {class:'text'}).text(message.text);
-//     var $message = $("<div>", {class: 'chat', 'data-id': message.objectId}).append($user, $text);
-//     return $message;
-//   },
+  renderMessage: function(message) {
+    var $user = $("<div>",{class: 'user'}).text(message.username);
+    var $text = $("<div>", {class:'text'}).text(message.text);
+    var $message = $("<div>", {class: 'chat', 'data-id': message.objectId}).append($user, $text);
+    return $message;
+  },
 
-//   displayMessage: function(message) {
-//     if( !app.onscreenMessages[message.objectId]) {
-//       var $html = app.renderMessage(message);
-//       $('#chats').prepend($html);
-//       app.onscreenMessages[message.objectId] = true;
-//     }
-//   }, 
+  displayMessage: function(message) {
+    if( !app.onscreenMessages[message.objectId]) {
+      var $html = app.renderMessage(message);
+      $('#chats').prepend($html);
+      app.onscreenMessages[message.objectId] = true;
+    }
+  }, 
 
-//   displayMessages: function(messages) {
-//     for(var i = 0; i < messages.length; i++) {
-//       app.displayMessage(messages[i]);
-//     }
-//   },
+  displayMessages: function(messages) {
+    for(var i = 0; i < messages.length; i++) {
+      app.displayMessage(messages[i]);
+    }
+  },
 
-//   loadMsgs: function() {
-//     $.ajax({
-//       url: app.server,
-//       data: { order: '-createdAt'},
-//       contentType: 'application/json',
-//       success: function(json) {
-//         app.displayMessages(json.results);
-//       },
-//       complete: function() {
-//         app.stopSpinner();
-//       }
-//     })
-//   },
+  loadMsgs: function() {
+    $.ajax({
+      url: 'http://127.0.0.1:3000/handleRequest',
+      // data: { order: '-createdAt'},
+      contentType: 'application/json',
+      success: function(json) {
+        app.displayMessages(json.results);
+      },
+      complete: function() {
+        app.stopSpinner();
+      }
+    })
+  },
 
-//   sendMsg: function(message) {
-//     app.startSpinner();
-//     $.ajax({
-//       type: 'POST',
-//       url: app.server,
-//       data: JSON.stringify(message),
-//       contentType: 'application/json',
-//       success: function(json) {
-//         message.objectId = json.objectId;
-//         app.displayMessage(message)
-//       },
-//       complete: function() {
-//         app.stopSpinner();
-//       }
-//     });
-//   },
+  sendMsg: function(message) {
+    app.startSpinner();
+    $.ajax({
+      type: 'POST',
+      url: 'http://127.0.0.1:3000/handleRequest',
+      data: JSON.stringify(message),
+      contentType: 'application/json',
+      success: function(json) {
+        message.objectId = json.objectId;
+        app.displayMessage(message)
+      },
+      complete: function() {
+        app.stopSpinner();
+      }
+    });
+  },
 
-//   startSpinner: function() {
-//     $('spinner img').show();
-//     $('form input[type=submit]').attr('disabled', "true");
-//   },
+  startSpinner: function() {
+    $('spinner img').show();
+    $('form input[type=submit]').attr('disabled', "true");
+  },
 
-//   stopSpinner: function() {
-//     $('.spinner img').fadeOut('fast');
-//     $('form input[type=submit]').attr('disabled', null);
-//   }
+  stopSpinner: function() {
+    $('.spinner img').fadeOut('fast');
+    $('form input[type=submit]').attr('disabled', null);
+  }
 
-// };
+};
 
 
 
