@@ -42,8 +42,12 @@ var requestHandler = function(request, response) {
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
 
+  if(request.method === 'POST'){
+    statusCode = 201;
+  }
+
   headers['Content-Type'] = "text/plain";
-  headers['POST'] = 201;
+
 
   // Content-Type = "application/json";
 
