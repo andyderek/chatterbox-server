@@ -175,7 +175,7 @@ var app = {
 
   loadMsgs: function() {
     $.ajax({
-      url: 'http://127.0.0.1:3000/handleRequest',
+      url: 'http://127.0.0.1:3000/classes/messages',
       // data: { order: '-createdAt'},
       contentType: 'application/json',
       success: function(json) {
@@ -191,7 +191,7 @@ var app = {
     app.startSpinner();
     $.ajax({
       type: 'POST',
-      url: 'http://127.0.0.1:3000/handleRequest',
+      url: 'http://127.0.0.1:3000/classes/messages',
       data: JSON.stringify(message),
       contentType: 'application/json',
       success: function(json) {

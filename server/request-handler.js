@@ -31,6 +31,10 @@ var requestHandler = function(request, response) {
     statusCode = 200;
     response.writeHead(statusCode, headers);
     response.end(JSON.stringify({results: messages}));
+  } else if (request.method === 'OPTIONS'){
+    statusCode = 200;
+    response.writeHead(statusCode, headers);
+    response.end(JSON.stringify({results: messages}));
   }
 } else {
   response.writeHead(404, headers);
