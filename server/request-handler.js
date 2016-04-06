@@ -15,26 +15,30 @@ var requestHandler = function(request, response) {
   var statusCode;
   // See the note below about CORS headers.
 
-  if(request.method === 'POST'){
+  if(request.url === '/classes/messages' || request.url === '/classes/room1'){
+    if(request.method === 'POST'){
     statusCode = 201;
     response.writeHead(statusCode, headers);
+    var body = '';
+    request.on('data', function(newPost) {
+      body += newPost;
+    });
+    request.on('end', function() {
+      messages.push(JSON.parse(body));
+    })
     response.end(JSON.stringify('Hello, World'));
   } else if (request.method === 'GET'){
     statusCode = 200;
     response.writeHead(statusCode, headers);
-    response.end(JSON.stringify({results: [{username: 'Jono', message: 'Do my bidding!'}]}));
+    response.end(JSON.stringify({results: messages}));
   }
-
+} else {
+  response.writeHead(404, headers);
+  response.end(JSON.stringify("Nice try suckah - but you still didn't make the cut"));
+};
 
 //   if(request.method === 'POST'){
 //     statusCode = 201;
-//     var body = '';
-//     request.on('data', function(newPost) {
-//       body += newPost;
-//     });
-//     request.on('end', function() {
-//       messages.push(JSON.parse(body));
-//     })
 //     } else {
 //     response.end(JSON.stringify({results: []}));
 //   };
